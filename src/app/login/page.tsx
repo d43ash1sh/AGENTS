@@ -2,8 +2,9 @@
 
 import { useState, useActionState } from 'react'
 import { signIn, signUp } from '@/lib/services/auth'
-import { Eye, EyeOff, Lock, Mail, Loader2, Home } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, Loader2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import Logo from '@/components/Logo'
 
 export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false)
@@ -18,11 +19,12 @@ export default function LoginPage() {
   const success = isSignUp ? signUpState?.success : null
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-radial from-slate-900 via-zinc-950 to-black px-4 py-12 sm:px-6 lg:px-8 text-white">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-950 px-4 py-12 sm:px-6 lg:px-8 text-white relative">
+      
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-violet-600 blur-[120px]" />
+        <div className="absolute top-[-5%] left-[-5%] w-[45%] h-[45%] rounded-full bg-blue-500/40 blur-[130px]" />
+        <div className="absolute bottom-[-5%] right-[-5%] w-[45%] h-[45%] rounded-full bg-violet-600/40 blur-[130px]" />
       </div>
 
       <div className="w-full max-w-md space-y-8 z-10">
@@ -30,27 +32,25 @@ export default function LoginPage() {
         <div className="flex flex-col items-center text-center">
           <Link 
             href="/" 
-            className="flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-zinc-900/60 border border-zinc-800 text-zinc-400 hover:text-white transition-all text-sm"
+            className="flex items-center gap-1.5 mb-6 px-3.5 py-2 rounded-xl bg-zinc-900/60 border border-zinc-800/80 text-zinc-400 hover:text-white transition-all text-xs font-semibold cursor-pointer active:scale-[0.98]"
           >
-            <Home className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" />
             <span>Back to Home</span>
           </Link>
           
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30">
-            <span className="text-xl font-bold tracking-wider">R</span>
-          </div>
-          <h2 className="mt-6 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          <Logo iconSize={40} showText={false} className="mb-2" />
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             {isSignUp ? 'Create an account' : 'Welcome back'}
           </h2>
-          <p className="mt-2 text-sm text-zinc-400">
+          <p className="mt-2 text-xs sm:text-sm text-zinc-400">
             {isSignUp 
               ? 'Find rooms and manage your listings easily' 
               : 'Sign in to access your listings and contact owners'}
           </p>
         </div>
 
-        {/* Form Card */}
-        <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-3xl p-8 shadow-2xl space-y-6">
+        {/* Glassmorphic Form Card */}
+        <div className="glass-panel rounded-3xl p-8 shadow-2xl space-y-6">
           {error && (
             <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm" role="alert">
               {error}
@@ -63,15 +63,15 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form action={isSignUp ? signUpAction : signInAction} className="space-y-6">
+          <form action={isSignUp ? signUpAction : signInAction} className="space-y-5">
             {/* Email Field */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-zinc-300">
+            <div className="space-y-1.5">
+              <label htmlFor="email" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
                 Email Address
               </label>
               <div className="relative rounded-xl shadow-sm">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                  <Mail className="h-5 w-5 text-zinc-500" aria-hidden="true" />
+                  <Mail className="h-4.5 w-4.5 text-zinc-500" aria-hidden="true" />
                 </div>
                 <input
                   type="email"
@@ -79,23 +79,21 @@ export default function LoginPage() {
                   id="email"
                   required
                   autoComplete="username"
-                  className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 pl-11 pr-4 text-white ring-1 ring-inset ring-zinc-800 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 transition-all"
-                  placeholder="name@rgu.ac.in"
+                  className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 pl-11 pr-4 text-white ring-1 ring-inset ring-zinc-850 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all"
+                  placeholder="name@example.com"
                   disabled={isPending}
                 />
               </div>
             </div>
 
             {/* Password Field */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label htmlFor="password" className="block text-sm font-medium text-zinc-300">
-                  Password
-                </label>
-              </div>
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+                Password
+              </label>
               <div className="relative rounded-xl shadow-sm">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                  <Lock className="h-5 w-5 text-zinc-500" aria-hidden="true" />
+                  <Lock className="h-4.5 w-4.5 text-zinc-500" aria-hidden="true" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -104,7 +102,7 @@ export default function LoginPage() {
                   required
                   autoComplete={isSignUp ? 'new-password' : 'current-password'}
                   minLength={6}
-                  className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 pl-11 pr-12 text-white ring-1 ring-inset ring-zinc-800 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 transition-all"
+                  className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 pl-11 pr-12 text-white ring-1 ring-inset ring-zinc-855 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all"
                   placeholder="••••••••"
                   disabled={isPending}
                 />
@@ -123,7 +121,7 @@ export default function LoginPage() {
                 </button>
               </div>
               {isSignUp && (
-                <p className="text-xs text-zinc-500 mt-1">Must be at least 6 characters.</p>
+                <p className="text-[10px] text-zinc-500 mt-1">Must be at least 6 characters.</p>
               )}
             </div>
 
@@ -131,7 +129,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:from-blue-500 hover:to-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none"
+              className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:from-blue-500 hover:to-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
             >
               {isPending ? (
                 <>
@@ -144,14 +142,15 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Toggle View */}
-          <div className="relative flex py-2 items-center">
+          {/* Divider */}
+          <div className="relative flex py-1 items-center">
             <div className="flex-grow border-t border-zinc-800"></div>
-            <span className="flex-shrink mx-4 text-zinc-600 text-xs uppercase tracking-wider">Or</span>
+            <span className="flex-shrink mx-4 text-zinc-600 text-[10px] uppercase tracking-wider">Or</span>
             <div className="flex-grow border-t border-zinc-800"></div>
           </div>
 
-          <p className="text-center text-sm text-zinc-400">
+          {/* Toggle */}
+          <p className="text-center text-xs sm:text-sm text-zinc-400">
             {isSignUp ? 'Already have an account? ' : 'New to RoomNearRGU? '}
             <button
               type="button"
@@ -159,7 +158,7 @@ export default function LoginPage() {
                 setIsSignUp(!isSignUp)
                 setShowPassword(false)
               }}
-              className="font-semibold leading-6 text-blue-400 hover:text-blue-300 transition-colors"
+              className="font-bold leading-6 text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
             >
               {isSignUp ? 'Sign in instead' : 'Create an account'}
             </button>
