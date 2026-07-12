@@ -2,26 +2,25 @@ import Logo from './Logo'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-zinc-900 bg-zinc-950 py-8 text-zinc-500 text-xs sm:text-sm mt-auto">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <footer className="border-t border-black/5 bg-[#fafafa] py-8 text-black/35 text-[10px] font-mono uppercase tracking-wider mt-auto z-10 relative">
+      <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           
           {/* Logo & copyright */}
           <div className="flex items-center gap-4">
-            <Logo iconSize={24} showText={true} className="opacity-80" />
-            <span className="hidden sm:inline border-l border-zinc-800 h-4" />
-            <span>&copy; {new Date().getFullYear()} RoomNearRGU. All rights reserved.</span>
+            <Logo iconSize={14} showText={true} className="opacity-75" />
+            <span className="hidden sm:inline border-l border-black/5 h-4" />
+            <span>&copy; {new Date().getFullYear()} NestRGU.</span>
           </div>
           
           {/* Attribution */}
           <div className="flex items-center gap-1.5" aria-label="Developer attribution">
-            <span>Made with ❤️ by</span>
+            <span>By</span>
             <a
               href="https://d43ash1sh.github.io/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-bold text-zinc-300 hover:text-white hover:underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 rounded-md px-1 cursor-pointer"
-              aria-label="Visit Debashish's portfolio website (opens in a new tab)"
+              className="font-bold text-black/60 hover:text-black transition-colors"
             >
               Debashish
             </a>

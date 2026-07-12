@@ -2,9 +2,12 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { calculateDistanceFromRGU } from '@/lib/utils/distance'
+import { parseDescription } from '@/lib/utils/description'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { getUser } from './auth'
+import { writeFile, mkdir } from 'fs/promises'
+import path from 'path'
 
 export interface Listing {
   id: string
@@ -23,6 +26,24 @@ export interface Listing {
   contact_phone: string
 }
 
+// Save uploaded images inside the public directory structure
+async function saveUploadedFile(file: File): Promise<string> {
+  if (!file || file.size === 0) return ''
+  
+  const bytes = await file.arrayBuffer()
+  const buffer = Buffer.from(bytes)
+
+  const uploadDir = path.join(process.cwd(), 'public', 'uploads')
+  await mkdir(uploadDir, { recursive: true })
+
+  const fileExt = path.extname(file.name) || '.png'
+  const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${fileExt}`
+  const filepath = path.join(uploadDir, filename)
+  await writeFile(filepath, buffer)
+
+  return `/uploads/${filename}`
+}
+
 export async function getListings(filters?: {
   query?: string
   minPrice?: number
@@ -37,7 +58,6 @@ export async function getListings(filters?: {
 
     if (filters?.query) {
       const q = filters.query.trim()
-      // text search or ilike across title, description, address
       query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%,address.ilike.%${q}%`)
     }
 
@@ -60,7 +80,6 @@ export async function getListings(filters?: {
     if (filters?.status && filters.status !== 'all') {
       query = query.eq('status', filters.status)
     } else {
-      // Default to showing only available listings on homepage search unless specified
       query = query.eq('status', 'available')
     }
 
@@ -109,7 +128,7 @@ export async function createListing(prevState: ListingState, formData: FormData)
   const room_type = formData.get('room_type') as string
   const amenitiesStr = formData.get('amenities') as string
   const contact_phone = formData.get('contact_phone') as string
-
+  
   // Simple validation
   if (!title || title.length < 3) return { error: 'Title must be at least 3 characters.' }
   if (!description || description.length < 10) return { error: 'Description must be at least 10 characters.' }
@@ -134,6 +153,22 @@ export async function createListing(prevState: ListingState, formData: FormData)
     ? amenitiesStr.split(',').map((a) => a.trim()).filter(Boolean)
     : []
 
+  // Optional image file saving
+  const file = formData.get('image') as File | null
+  let imageUrl = ''
+  if (file && file.size > 0) {
+    try {
+      imageUrl = await saveUploadedFile(file)
+    } catch (e) {
+      return { error: 'Failed to save image file: ' + (e instanceof Error ? e.message : 'Unknown error') }
+    }
+  }
+
+  // Combine description with image URL if uploaded
+  const descriptionWithImage = imageUrl 
+    ? `${description}\n\n||image_url||${imageUrl}`
+    : description
+
   // Calculate distance
   let distance_to_rgu = 0
   try {
@@ -146,7 +181,7 @@ export async function createListing(prevState: ListingState, formData: FormData)
   const supabase = await createClient()
   const { error } = await supabase.from('listings').insert({
     title,
-    description,
+    description: descriptionWithImage,
     price,
     address,
     latitude,
@@ -217,6 +252,25 @@ export async function updateListing(listingId: string, prevState: ListingState, 
     ? amenitiesStr.split(',').map((a) => a.trim()).filter(Boolean)
     : []
 
+  // Extract existing image URL
+  const { imageUrl: existingImageUrl } = parseDescription(current.description)
+  let imageUrl = existingImageUrl
+
+  // Optional image file saving
+  const file = formData.get('image') as File | null
+  if (file && file.size > 0) {
+    try {
+      imageUrl = await saveUploadedFile(file)
+    } catch (e) {
+      return { error: 'Failed to save image file: ' + (e instanceof Error ? e.message : 'Unknown error') }
+    }
+  }
+
+  // Combine description with image URL if uploaded
+  const descriptionWithImage = imageUrl 
+    ? `${description}\n\n||image_url||${imageUrl}`
+    : description
+
   // Calculate distance
   let distance_to_rgu = 0
   try {
@@ -231,7 +285,7 @@ export async function updateListing(listingId: string, prevState: ListingState, 
     .from('listings')
     .update({
       title,
-      description,
+      description: descriptionWithImage,
       price,
       address,
       latitude,

@@ -3,7 +3,7 @@
 import { useState, useActionState } from 'react'
 import { RGU_LATITUDE, RGU_LONGITUDE } from '@/lib/utils/distance'
 import MapLoader from './MapLoader'
-import { Loader2, ArrowLeft, MapPin } from 'lucide-react'
+import { Loader2, ArrowLeft, MapPin, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
 import { Listing } from '@/lib/services/listings'
 
@@ -17,7 +17,6 @@ interface ListingFormProps {
 }
 
 export default function ListingForm({ initialData, action, submitLabel }: ListingFormProps) {
-  // Setup coordinate state, defaulting to RGU if no initial data
   const [coords, setCoords] = useState({
     lat: initialData?.latitude ?? RGU_LATITUDE,
     lng: initialData?.longitude ?? RGU_LONGITUDE,
@@ -30,37 +29,41 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 relative">
+    <div className="mx-auto max-w-5xl px-6 py-12 relative w-full pt-20">
       
       {/* Background glow decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-        <div className="absolute top-[20%] left-[20%] w-[35%] h-[35%] rounded-full bg-blue-500/20 blur-[130px]" />
+        <div className="absolute top-[20%] left-[20%] w-[35%] h-[35%] rounded-full bg-blue-500/5 blur-[160px] radial-glow" />
       </div>
 
+      {/* Header */}
       <div className="flex items-center gap-4 mb-8 z-10 relative">
         <Link
           href={initialData ? `/listings/${initialData.id}` : '/'}
-          className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 transition-all cursor-pointer active:scale-[0.97]"
+          className="flex items-center justify-center p-2 rounded bg-black/5 border border-black/10 text-black/50 hover:text-black transition-all cursor-pointer active:scale-[0.97]"
           aria-label="Go back"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            {initialData ? 'Edit Room Listing' : 'Post a New Room'}
+          <h1 className="caveman-title text-2xl sm:text-3xl text-black">
+            {initialData ? 'edit room listing' : 'post a new room'}
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-400">
-            {initialData ? 'Update details for this room accommodation' : 'Provide room details for students looking for housing near RGU'}
+          <p className="text-xs text-black/55 leading-relaxed font-light">
+            {initialData 
+              ? 'Update the parameters and location of this room' 
+              : 'Add your property to the Rajiv Gandhi University student accommodation directory'}
           </p>
         </div>
       </div>
 
       <form action={formAction} className="grid grid-cols-1 gap-8 lg:grid-cols-12 z-10 relative">
+        
         {/* Form Inputs (Left 7 columns) */}
-        <div className="lg:col-span-7 space-y-6 glass-panel p-6 sm:p-8 rounded-3xl shadow-xl shadow-black/10">
+        <div className="lg:col-span-7 space-y-5 bg-black/2 border border-black/8 p-6 sm:p-8 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.03)]">
           
           {state?.error && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm" role="alert">
+            <div className="p-3.5 rounded border border-red-500/10 bg-red-500/5 text-red-600 text-xs font-mono" role="alert">
               {state.error}
             </div>
           )}
@@ -71,7 +74,7 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
 
           {/* Title Field */}
           <div className="space-y-1.5">
-            <label htmlFor="title" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <label htmlFor="title" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
               Listing Title
             </label>
             <input
@@ -82,15 +85,15 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
               minLength={3}
               defaultValue={initialData?.title}
               disabled={isPending}
-              className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 px-4 text-white ring-1 ring-inset ring-zinc-850 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all"
-              placeholder="Sleek Single Room near RGU Campus"
+              className="block w-full rounded bg-[#ffffff] border border-black/8 focus:border-black/20 focus:outline-none py-3 px-4 text-black placeholder-black/25 text-xs transition-colors"
+              placeholder="Single Room near RGU Campus"
             />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Price Field */}
             <div className="space-y-1.5">
-              <label htmlFor="price" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+              <label htmlFor="price" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
                 Monthly Rent (₹ INR)
               </label>
               <input
@@ -101,14 +104,14 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
                 min={0}
                 defaultValue={initialData?.price}
                 disabled={isPending}
-                className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 px-4 text-white ring-1 ring-inset ring-zinc-850 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all"
+                className="block w-full rounded bg-[#ffffff] border border-black/8 focus:border-black/20 focus:outline-none py-3 px-4 text-black placeholder-black/25 text-xs transition-colors"
                 placeholder="4000"
               />
             </div>
 
             {/* Room Type Field */}
             <div className="space-y-1.5">
-              <label htmlFor="room_type" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+              <label htmlFor="room_type" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
                 Room Type
               </label>
               <select
@@ -117,7 +120,7 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
                 required
                 defaultValue={initialData?.room_type ?? 'single'}
                 disabled={isPending}
-                className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 px-4 text-white ring-1 ring-inset ring-zinc-850 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all cursor-pointer"
+                className="block w-full rounded bg-[#ffffff] border border-black/8 focus:border-black/20 focus:outline-none py-3 px-4 text-black text-xs transition-colors cursor-pointer"
               >
                 <option value="single">Single Room</option>
                 <option value="shared">Shared Room</option>
@@ -130,7 +133,7 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Contact Phone */}
             <div className="space-y-1.5">
-              <label htmlFor="contact_phone" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+              <label htmlFor="contact_phone" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
                 Contact Phone Number
               </label>
               <input
@@ -141,7 +144,7 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
                 minLength={8}
                 defaultValue={initialData?.contact_phone}
                 disabled={isPending}
-                className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 px-4 text-white ring-1 ring-inset ring-zinc-850 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all"
+                className="block w-full rounded bg-[#ffffff] border border-black/8 focus:border-black/20 focus:outline-none py-3 px-4 text-black placeholder-black/25 text-xs transition-colors"
                 placeholder="9876543210"
               />
             </div>
@@ -149,7 +152,7 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
             {/* Status (Only visible on Edit screen) */}
             {initialData && (
               <div className="space-y-1.5">
-                <label htmlFor="status" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+                <label htmlFor="status" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
                   Availability Status
                 </label>
                 <select
@@ -158,7 +161,7 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
                   required
                   defaultValue={initialData?.status ?? 'available'}
                   disabled={isPending}
-                  className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 px-4 text-white ring-1 ring-inset ring-zinc-850 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all cursor-pointer"
+                  className="block w-full rounded bg-[#ffffff] border border-black/8 focus:border-black/20 focus:outline-none py-3 px-4 text-black text-xs transition-colors cursor-pointer"
                 >
                   <option value="available">Available</option>
                   <option value="rented">Rented</option>
@@ -170,7 +173,7 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
 
           {/* Description Field */}
           <div className="space-y-1.5">
-            <label htmlFor="description" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <label htmlFor="description" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
               Detailed Description
             </label>
             <textarea
@@ -181,14 +184,14 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
               rows={4}
               defaultValue={initialData?.description}
               disabled={isPending}
-              className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 px-4 text-white ring-1 ring-inset ring-zinc-850 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all resize-none"
+              className="block w-full rounded bg-[#ffffff] border border-black/8 focus:border-black/20 focus:outline-none py-3 px-4 text-black placeholder-black/25 text-xs transition-colors resize-none"
               placeholder="Provide information about water supply, power backup, distance to campus, target tenant type (boys/girls/any), etc."
             />
           </div>
 
           {/* Address Field */}
           <div className="space-y-1.5">
-            <label htmlFor="address" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <label htmlFor="address" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
               Address Location
             </label>
             <input
@@ -199,14 +202,14 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
               minLength={5}
               defaultValue={initialData?.address}
               disabled={isPending}
-              className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 px-4 text-white ring-1 ring-inset ring-zinc-850 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all"
+              className="block w-full rounded bg-[#ffffff] border border-black/8 focus:border-black/20 focus:outline-none py-3 px-4 text-black placeholder-black/25 text-xs transition-colors"
               placeholder="Near RGU Main Gate, Doimukh"
             />
           </div>
 
           {/* Amenities Field */}
           <div className="space-y-1.5">
-            <label htmlFor="amenities" className="block text-xs font-bold uppercase tracking-wider text-zinc-400">
+            <label htmlFor="amenities" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
               Amenities (Comma-separated)
             </label>
             <input
@@ -215,16 +218,33 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
               id="amenities"
               defaultValue={initialData?.amenities?.join(', ')}
               disabled={isPending}
-              className="block w-full rounded-xl border-0 bg-zinc-950/60 py-3.5 px-4 text-white ring-1 ring-inset ring-zinc-850 placeholder:text-zinc-600 focus:ring-2 focus:ring-inset focus:ring-blue-500 text-sm leading-6 transition-all"
+              className="block w-full rounded bg-[#ffffff] border border-black/8 focus:border-black/20 focus:outline-none py-3 px-4 text-black placeholder-black/25 text-xs transition-colors"
               placeholder="Wifi, Water 24/7, Parking, Power Backup"
             />
+          </div>
+
+          {/* Optional Image Upload Field */}
+          <div className="space-y-1.5">
+            <label htmlFor="image" className="block font-mono text-[9px] uppercase tracking-wider text-black/45">
+              Optional Room Photo
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="file"
+                name="image"
+                id="image"
+                accept="image/*"
+                disabled={isPending}
+                className="block w-full text-xs text-black/60 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-[10px] file:font-mono file:uppercase file:tracking-wider file:bg-black file:text-white file:hover:bg-black/90 file:cursor-pointer transition-colors bg-[#ffffff] border border-black/8 rounded px-3 py-1.5"
+              />
+            </div>
           </div>
 
           {/* Submit Action */}
           <button
             type="submit"
             disabled={isPending}
-            className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:from-blue-500 hover:to-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+            className="flex w-full items-center justify-center rounded bg-black hover:bg-black/90 px-4 py-3.5 text-xs font-mono uppercase tracking-wider text-white transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none cursor-pointer shadow-md shadow-black/10"
           >
             {isPending ? (
               <>
@@ -239,17 +259,17 @@ export default function ListingForm({ initialData, action, submitLabel }: Listin
 
         {/* Map Picker (Right 5 columns) */}
         <div className="lg:col-span-5 flex flex-col space-y-4 h-[400px] lg:h-auto min-h-[400px]">
-          <div className="bg-zinc-900/40 border border-zinc-850 p-5 rounded-3xl space-y-2.5">
-            <h3 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-blue-400" />
-              <span>Map Marker Picker</span>
+          <div className="bg-black/2 border border-black/8 p-5 rounded-xl space-y-2">
+            <h3 className="text-xs font-semibold text-black flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-blue-500" />
+              <span>Map Marker Coordinate Picker</span>
             </h3>
-            <p className="text-[11px] text-zinc-500 leading-relaxed">
-              Click anywhere on the OpenStreetMap canvas or drag the green marker pin to specify the exact geo-coordinates of the accommodation.
+            <p className="text-[10px] text-black/55 leading-relaxed font-light">
+              Click anywhere on the map or drag the blue marker to specify the exact geo-coordinates of the room.
             </p>
           </div>
           
-          <div className="flex-grow h-full min-h-[300px] rounded-3xl overflow-hidden shadow-2xl">
+          <div className="flex-grow h-full min-h-[300px] rounded-xl overflow-hidden">
             <MapLoader
               markerPos={coords}
               onCoordinateChange={handleCoordinateChange}

@@ -27,13 +27,13 @@ export default function DeleteListingButton({ id }: { id: string }) {
     <button
       onClick={handleDelete}
       disabled={isPending}
-      className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-red-400 hover:text-white bg-red-950/20 border border-red-900/60 hover:bg-red-900/50 rounded-xl transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+      className="flex items-center gap-1.5 px-4 py-2 font-mono text-[10px] uppercase tracking-wider text-red-600 hover:text-red-700 bg-red-500/5 border border-red-500/20 hover:bg-red-500/10 rounded transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
       aria-label="Delete this listing"
     >
       {isPending ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
       ) : (
-        <Trash2 className="w-4 h-4" />
+        <Trash2 className="w-3.5 h-3.5" />
       )}
       <span>Delete Listing</span>
     </button>

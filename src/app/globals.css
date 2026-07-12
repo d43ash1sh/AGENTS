@@ -1,78 +1,243 @@
 @import "tailwindcss";
 
-:root {
-  --background: #09090b;
-  --foreground: #fafafa;
+@theme {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #fafafa;
+  --color-card-bg: rgba(0, 0, 0, 0.015);
+  --color-border-subtle: rgba(0, 0, 0, 0.03);
+  --color-border-hover: rgba(0, 0, 0, 0.08);
+  --color-text-primary: rgba(0, 0, 0, 0.9);
+  --color-text-secondary: rgba(0, 0, 0, 0.55);
+  --color-text-muted: rgba(0, 0, 0, 0.35);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: var(--font-geist-mono);
+:root {
+  --background: #ffffff;
+  --foreground: rgba(0, 0, 0, 0.9);
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.7;
+  overflow-x: hidden;
 }
 
-/* Custom Scrollbars */
+/* Custom Scrollbars matching light clean interface */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: #ffffff;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: rgba(0, 0, 0, 0.1);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: rgba(0, 0, 0, 0.2);
 }
 
-/* Custom utilities */
-@utility glass-panel {
-  background-color: rgba(15, 15, 17, 0.7);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(63, 63, 70, 0.35);
+/* Typography styles */
+.caveman-hero {
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
 }
 
-@utility glass-panel-light {
-  background-color: rgba(255, 255, 255, 0.05);
+.caveman-title {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.caveman-label {
+  font-family: var(--font-geist-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  opacity: 0.5;
+}
+
+/* Base easing curve */
+.transition-caveman {
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  transition-duration: 200ms;
+}
+
+/* Glassmorphism Surface utility (Light Mode) */
+.glass-surface {
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 8px 32px rgba(0, 0, 0, 0.04);
 }
 
-@utility shimmer-effect {
-  position: relative;
+/* Interactive card transitions (Light Mode) */
+.caveman-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 4px 16px rgba(0, 0, 0, 0.03);
+  transition: border-color 200ms cubic-bezier(0.23, 1, 0.32, 1),
+              background-color 200ms cubic-bezier(0.23, 1, 0.32, 1),
+              transform 200ms cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.caveman-card:hover {
+  border-color: rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 20px 48px -12px rgba(0, 0, 0, 0.08);
+}
+
+/* Grain Animation */
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
+}
+
+.grain-overlay {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+  background: transparent url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.015"/%3E%3C/svg%3E') repeat;
+  animation: grain 8s steps(10) infinite;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.soft-vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 60%, rgba(255, 255, 255, 0.4) 100%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.radial-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.05;
+}
+
+/* Custom leaflet tweaks for light mode */
+.leaflet-container {
+  background: #f5f5f5 !important;
+}
+
+.leaflet-bar {
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
   overflow: hidden;
-  background-color: #1f1f23;
-
-  &::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    transform: translateX(-100%);
-    background-image: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.03) 20%,
-      rgba(255, 255, 255, 0.08) 60%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    animation: shimmer 2s infinite;
-    content: '';
-  }
 }
 
-@keyframes shimmer {
+.leaflet-bar a {
+  background-color: #ffffff !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  transition: all 150ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.leaflet-bar a:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: black !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: black !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08) !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px 16px !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Glowing Neon Pulse Marker for light mode */
+@keyframes neon-pulse-light {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
   100% {
-    transform: translateX(100%);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
   }
 }
+
+@keyframes neon-pulse-blue-light {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.glow-marker-rgu {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ef4444;
+  border: 2px solid white;
+  animation: neon-pulse-light 2s infinite;
+}
+
+.glow-marker-room {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #3b82f6;
+  border: 2px solid white;
+  animation: neon-pulse-blue-light 2s infinite;
+}
+
+/* Premium Vercel-style Shifting Text Gradient Animation */
+@keyframes textShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-gradient-text {
+  background: linear-gradient(to right, #000000 20%, #3b82f6 40%, #a855f7 60%, #000000 80%);
+  background-size: 200% auto;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: textShimmer 8s linear infinite;
+  display: inline-block;
+}
+

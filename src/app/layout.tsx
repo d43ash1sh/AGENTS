@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RoomNearRGU - Student Accommodation Platform",
-  description: "Find student rooms and housing near Rajiv Gandhi University (RGU)",
+  title: "NestRGU - Student Accommodation Discovery",
+  description: "Verified student housing around Rajiv Gandhi University, Doimukh. Skip broker drama.",
 };
 
 export default function RootLayout({
@@ -29,9 +29,18 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-white font-sans selection:bg-blue-500 selection:text-white">
+      <body className="min-h-full flex flex-col bg-[#ffffff] text-[#000000] font-sans selection:bg-black/10 selection:text-black">
+        {/* Premium visual layers */}
+        <div className="grain-overlay" />
+        <div className="soft-vignette" />
+        
+        {/* Fixed Header */}
         <Navbar />
-        <main className="flex-grow flex flex-col mt-4">{children}</main>
+        
+        {/* Main layout container */}
+        <main className="flex-grow flex flex-col relative z-10">{children}</main>
+        
+        {/* Footer */}
         <Footer />
       </body>
     </html>

@@ -18,7 +18,7 @@ export default async function NewListingPage() {
 
   // Bind the state-less Server Action for form submission
   return (
-    <div className="bg-zinc-950 min-h-screen text-white">
+    <div className="bg-[#ffffff] min-h-screen text-black">
       <ListingForm
         action={createListing}
         submitLabel="Create Room Listing"

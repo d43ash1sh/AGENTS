@@ -35,7 +35,7 @@ export default async function EditListingPage({ params }: EditListingPageProps) 
   const updateActionWithId = updateListing.bind(null, id)
 
   return (
-    <div className="bg-zinc-950 min-h-screen text-white">
+    <div className="bg-[#ffffff] min-h-screen text-black">
       <ListingForm
         initialData={listing}
         action={updateActionWithId}
